@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using EventSourcing.Domain.ComicClub.Comic.Event;
 using EventSourcing.Domain.CookingClub.Membership.Event;
 
 namespace EventSourcing.Common.SerializedEvent;
@@ -27,6 +28,8 @@ public class Serializer
         {
             ApplicationSubmitted => "CookingClub_Membership_ApplicationSubmitted",
             ApplicationEvaluated => "CookingClub_Membership_ApplicationEvaluated",
+            ComicUploaded => "ComicClub_Comic_ComicUploaded",
+            ComicAuthorAmended => "ComicClub_Comic_ComicAuthorAmended",
             _ => throw new ArgumentException($"Unknown event type: {@event.GetType().Name}")
         };
     }
@@ -48,6 +51,21 @@ public class Serializer
             case ApplicationEvaluated applicationEvaluated:
                 jsonObject.Add("evaluationOutcome", applicationEvaluated.EvaluationOutcome.ToString());
                 break;
+            
+            case ComicUploaded comicUploaded:
+                jsonObject.Add("title", comicUploaded.Title);
+                jsonObject.Add("author", comicUploaded.Author);
+                jsonObject.Add("description", comicUploaded.Description);
+                jsonObject.Add("genre", comicUploaded.Genre);
+                jsonObject.Add("numberOfPages", comicUploaded.NumberOfPages);
+                jsonObject.Add("textContent", comicUploaded.TextContent);
+                break;
+            
+            case ComicAuthorAmended comicAuthorAmended:
+                jsonObject.Add("newAuthor", comicAuthorAmended.NewAuthor);
+                jsonObject.Add("reason", comicAuthorAmended.Reason);
+                break;
+                
         }
 
         return jsonObject.ToJsonString();

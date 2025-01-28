@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using EventSourcing.Domain.ComicClub.Comic.Event;
 using EventSourcing.Domain.CookingClub.Membership.Aggregate;
 using EventSourcing.Domain.CookingClub.Membership.Event;
 
@@ -36,6 +37,32 @@ public class Deserializer
                 CausationId = serializedEvent.CausationId,
                 RecordedOn = recordedOn,
                 EvaluationOutcome = MembershipStatusHelper.FromString(PayloadString(serializedEvent.JsonPayload, "evaluationOutcome"))
+            },
+            "ComicClub_Comic_ComicUploaded" => new ComicUploaded
+            {
+                EventId = serializedEvent.EventId,
+                AggregateId = serializedEvent.AggregateId,
+                AggregateVersion = serializedEvent.AggregateVersion,
+                CorrelationId = serializedEvent.CorrelationId,
+                CausationId = serializedEvent.CausationId,
+                RecordedOn = recordedOn,
+                Title = PayloadString(serializedEvent.JsonPayload, "title"),
+                Author = PayloadString(serializedEvent.JsonPayload, "author"),
+                Description = PayloadString(serializedEvent.JsonPayload, "description"),
+                Genre = PayloadString(serializedEvent.JsonPayload, "genre"),
+                NumberOfPages = PayloadInt(serializedEvent.JsonPayload, "numberOfPages"),
+                TextContent = PayloadString(serializedEvent.JsonPayload, "textContent"),
+            },
+            "ComicClub_Comic_ComicAuthorAmended" => new ComicAuthorAmended
+            {
+                EventId = serializedEvent.EventId,
+                AggregateId = serializedEvent.AggregateId,
+                AggregateVersion = serializedEvent.AggregateVersion,
+                CorrelationId = serializedEvent.CorrelationId,
+                CausationId = serializedEvent.CausationId,
+                RecordedOn = recordedOn,
+                NewAuthor = PayloadString(serializedEvent.JsonPayload, "newAuthor"),
+                Reason = PayloadString(serializedEvent.JsonPayload, "reason")
             },
             _ => throw new ArgumentException($"Unknown event type: {serializedEvent.EventName}")
         };
