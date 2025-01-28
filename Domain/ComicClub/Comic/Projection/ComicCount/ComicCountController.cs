@@ -24,5 +24,17 @@ public class ComicCountProjectionController : ProjectionController
         _comicCountProjectionHandler = comicCountProjectionHandler;
     }
 
-    // expose the handler in an http endpoint
+    [HttpPost("comic-count")]
+    public IActionResult Project([FromBody] AmbarHttpRequest request)
+    {
+        return new ContentResult
+        {
+            Content = ProcessProjectionHttpRequest(
+                request,
+                _comicCountProjectionHandler,
+                "ComicClub_Comic_Projection_ComicCount"),
+            ContentType = "application/json",
+            StatusCode = 200
+        };
+    }
 }
